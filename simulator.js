@@ -5,117 +5,117 @@ class Simulator {
 		this.directions = [['-1', '-1'], ['-1', '0'], ['-1', '1'], ['0', '-1'], ['0', '1'], ['1', '-1'], ['1', '0'], ['1', '1']]
     }
 
-	async parseFile(fileName) {
-		// Pull in the file and parse it
-		var fs = require('fs').promises;
-		const data = await (await fs.readFile(fileName, 'utf8')).split('\n')
-		
-		// Basic check for file format
-		if (data[0] != '#Life 1.06') {
-			throw 'Invalid File Format / Unknown File Format'
-		}
-		
-		// create coordinates
-		for(var i = 1; i < data.length; ++i) {
-			var coordinate = data[i].split(" ")
-			var x = coordinate[0]
-			var y = coordinate[1]
-			
-			if(this.coordinates[x] == null) {
-				this.coordinates[x] = []
-			}
-			this.coordinates[x].push(y)
-		}
-	}
+    async parseFile(fileName) {
+        // Pull in the file and parse it
+        var fs = require('fs').promises;
+        const data = await (await fs.readFile(fileName, 'utf8')).split('\n')
+        
+        // Basic check for file format
+        if (data[0] != '#Life 1.06') {
+            throw 'Invalid File Format / Unknown File Format'
+        }
+        
+        // create coordinates
+        for(var i = 1; i < data.length; ++i) {
+            var coordinate = data[i].split(" ")
+            var x = coordinate[0]
+            var y = coordinate[1]
+            
+            if(this.coordinates[x] == null) {
+                this.coordinates[x] = []
+            }
+            this.coordinates[x].push(y)
+        }
+    }
 
-	printCoordinates() {
-		var toPrint = []
-		for(var x of Object.keys(this.coordinates)) {
-			for(var y of this.coordinates[x]) {
-				toPrint.push([x,y])
-			}
-		}
-		console.log(toPrint)
-	}
+    printCoordinates() {
+        var toPrint = []
+        for(var x of Object.keys(this.coordinates)) {
+            for(var y of this.coordinates[x]) {
+                toPrint.push([x,y])
+            }
+        }
+        console.log(toPrint)
+    }
 
     printCoordinatesInLife106Format() {
         var toPrint = []
-		for(var x of Object.keys(this.coordinates)) {
-			for(var y of this.coordinates[x]) {
-				toPrint.push([x,y])
-			}
-		}
+        for(var x of Object.keys(this.coordinates)) {
+            for(var y of this.coordinates[x]) {
+                toPrint.push([x,y])
+            }
+        }
         var output = '#Life 1.06\n'
         toPrint.forEach(coordinate => output += `${coordinate[0]} ${coordinate[1]}\n`)
         console.log(output)
     }
 
-	simulate() {
-		// keep track of where we've been to prevent duplicates
-		var visited = new Set() 
+    simulate() {
+        // keep track of where we've been to prevent duplicates
+        var visited = new Set() 
         var nextCoordinates = {}
-		for(var x of Object.keys(this.coordinates)) {
-			for(var y of this.coordinates[x]) {
-				var visitKey = `${x},${y}`
-				if (visited.has(visitKey)) {continue}
-				visited.add(visitKey)
+        for(var x of Object.keys(this.coordinates)) {
+            for(var y of this.coordinates[x]) {
+                var visitKey = `${x},${y}`
+                if (visited.has(visitKey)) {continue}
+                visited.add(visitKey)
 
-				if (this.cellIsAliveNextGeneration(x, y, true)) {
-					// add to next generation
-					if(nextCoordinates[x] == null) {
-						nextCoordinates[x] = []
-					}
-					nextCoordinates[x].push(y)
-				}
+                if (this.cellIsAliveNextGeneration(x, y, true)) {
+                    // add to next generation
+                    if(nextCoordinates[x] == null) {
+                        nextCoordinates[x] = []
+                    }
+                    nextCoordinates[x].push(y)
+                }
 
-				// Check to see if any of the neighbors need reviving:
-				// 4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-				for(var dir of this.directions) {
-					var newX = this.add(x, dir[0])
-					var newY = this.add(y, dir[1])
+                // Check to see if any of the neighbors need reviving:
+                // 4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+                for(var dir of this.directions) {
+                    var newX = this.add(x, dir[0])
+                    var newY = this.add(y, dir[1])
 
-					var neighborKey = `${newX},${newY}`
-					// continue if neighbor has been visited OR is alive
-					if (visited.has(neighborKey) 
-						|| (this.coordinates[newX] != null && this.coordinates[newX].includes(newY))
-					) {continue}
-					visited.add(neighborKey)
+                    var neighborKey = `${newX},${newY}`
+                    // continue if neighbor has been visited OR is alive
+                    if (visited.has(neighborKey) 
+                        || (this.coordinates[newX] != null && this.coordinates[newX].includes(newY))
+                    ) {continue}
+                    visited.add(neighborKey)
 
-					if (this.cellIsAliveNextGeneration(newX, newY, false)) {
-						// add to next generation
-						if(nextCoordinates[newX] == null) {
-							nextCoordinates[newX] = []
-						}
-						nextCoordinates[newX].push(newY)
-					}
-				}
-			}
-		}
-		this.coordinates = nextCoordinates
-	}
+                    if (this.cellIsAliveNextGeneration(newX, newY, false)) {
+                        // add to next generation
+                        if(nextCoordinates[newX] == null) {
+                            nextCoordinates[newX] = []
+                        }
+                        nextCoordinates[newX].push(newY)
+                    }
+                }
+            }
+        }
+        this.coordinates = nextCoordinates
+    }
 
-	cellIsAliveNextGeneration(x, y, isAlive) {
-		var numLiveNeighbors = 0 
+    cellIsAliveNextGeneration(x, y, isAlive) {
+        var numLiveNeighbors = 0 
 
-		for(var dir of this.directions) {
+        for(var dir of this.directions) {
             var newX = this.add(x, dir[0])
             var newY = this.add(y, dir[1])
 
-			if(this.coordinates[newX] && this.coordinates[newX].includes(newY)) {
-				numLiveNeighbors++
-			}
-		}
+            if(this.coordinates[newX] && this.coordinates[newX].includes(newY)) {
+                numLiveNeighbors++
+            }
+        }
 
-		if (isAlive) {
-			// 1. Any live cell with fewer than two live neighbours dies, as if by underpopulation.
-			// 2. Any live cell with two or three live neighbours lives on to the next generation.
-			// 3. Any live cell with more than three live neighbours dies, as if by overpopulation.
-			return numLiveNeighbors == 2 || numLiveNeighbors == 3
-		} else {
-			// 4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
-			return numLiveNeighbors == 3
-		}
-	}
+        if (isAlive) {
+            // 1. Any live cell with fewer than two live neighbours dies, as if by underpopulation.
+            // 2. Any live cell with two or three live neighbours lives on to the next generation.
+            // 3. Any live cell with more than three live neighbours dies, as if by overpopulation.
+            return numLiveNeighbors == 2 || numLiveNeighbors == 3
+        } else {
+            // 4. Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+            return numLiveNeighbors == 3
+        }
+    }
 
     add(str1, str2)
     {

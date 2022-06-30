@@ -18,36 +18,36 @@ const { clear, debug } = flags;
 
 // Main function
 (async () => {
-	// Boilerplate begin
-	init({ clear });
-	input.includes(`help`) && cli.showHelp(0);
-	debug && log(flags);
-	// Boilerplate end
+    // Boilerplate begin
+    init({ clear });
+    input.includes(`help`) && cli.showHelp(0);
+    debug && log(flags);
+    // Boilerplate end
 
-	if (input.length < 1 || !(input[0].endsWith('.lif') || input[0].endsWith('.life'))) {
-		console.error('ERROR: Please provide a .lif or .life file in Life 1.06 format')
-		return
-	} 
-	
-	var simulator = new Simulator()
-	try {
-		await simulator.parseFile(input[0])
-	} catch (e) {
-		console.error("ERROR: " + e)
-		return 
-	}
-	console.log(simulator.coordinates)
-	console.log('Initial state:')
-	simulator.printCoordinates()
-	
-	var turnsToSimulate = parseInt(input[1]) ? parseInt(input[1]) : 10
-	console.log(`\nSimulating the next ${turnsToSimulate} generations...`)
-	for(var i = 0; i < turnsToSimulate; ++i) {
-		simulator.simulate()
-		simulator.printCoordinates()
-	}
-	console.log(`\nFinal Results in Life106 format:`)
-	simulator.printCoordinatesInLife106Format()
+    if (input.length < 1 || !(input[0].endsWith('.lif') || input[0].endsWith('.life'))) {
+        console.error('ERROR: Please provide a .lif or .life file in Life 1.06 format')
+        return
+    } 
+
+    var simulator = new Simulator()
+    try {
+        await simulator.parseFile(input[0])
+    } catch (e) {
+        console.error("ERROR: " + e)
+        return 
+    }
+    console.log(simulator.coordinates)
+    console.log('Initial state:')
+    simulator.printCoordinates()
+
+    var turnsToSimulate = parseInt(input[1]) ? parseInt(input[1]) : 10
+    console.log(`\nSimulating the next ${turnsToSimulate} generations...`)
+    for(var i = 0; i < turnsToSimulate; ++i) {
+        simulator.simulate()
+        simulator.printCoordinates()
+    }
+    console.log(`\nFinal Results in Life106 format:`)
+    simulator.printCoordinatesInLife106Format()
 })();
 
 
