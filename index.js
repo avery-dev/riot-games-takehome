@@ -36,7 +36,7 @@ const { clear, debug } = flags;
         console.error("ERROR: " + e)
         return 
     }
-    console.log(simulator.coordinates)
+    
     console.log('Initial state:')
     simulator.printCoordinates()
 
@@ -44,7 +44,6 @@ const { clear, debug } = flags;
     console.log(`\nSimulating the next ${turnsToSimulate} generations...`)
     for(var i = 0; i < turnsToSimulate; ++i) {
         simulator.simulate()
-        simulator.printCoordinates()
     }
     console.log(`\nFinal Results in Life106 format:`)
     simulator.printCoordinatesInLife106Format()
