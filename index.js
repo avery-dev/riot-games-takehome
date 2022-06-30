@@ -36,7 +36,7 @@ const { clear, debug } = flags;
 		console.error("ERROR: " + e)
 		return 
 	}
-	
+	console.log(simulator.coordinates)
 	console.log('Initial state:')
 	simulator.printCoordinates()
 	

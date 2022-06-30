@@ -21,7 +21,8 @@
 		"utils"
 	],
 	"scripts": {
-		"format": "prettier --write \"./**/*.{js,json}\""
+		"format": "prettier --write \"./**/*.{js,json}\"",
+			"test": "jest"
 	},
 	"dependencies": {
 		"chalk": "^4.1.2",
@@ -33,6 +34,7 @@
 		"meow": "^9.0.0"
 	},
 	"devDependencies": {
-		"prettier": "^2.7.1"
+		"prettier": "^2.7.1",
+		"jest": "^28.1.2"
 	}
 }
