@@ -24,8 +24,8 @@ const { clear, debug } = flags;
 	debug && log(flags);
 	// Boilerplate end
 
-	if (input.length < 1 || input[0].substr(-4) != '.txt') {
-		console.error('ERROR: Please provide a .txt file in Life 1.06 format')
+	if (input.length < 1 || !(input[0].endsWith('.lif') || input[0].endsWith('.life'))) {
+		console.error('ERROR: Please provide a .lif or .life file in Life 1.06 format')
 		return
 	} 
 	
@@ -46,6 +46,8 @@ const { clear, debug } = flags;
 		simulator.simulate()
 		simulator.printCoordinates()
 	}
+	console.log(`\nFinal Results in Life106 format:`)
+	simulator.printCoordinatesInLife106Format()
 })();
 
 

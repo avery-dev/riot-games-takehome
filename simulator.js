@@ -1,8 +1,7 @@
 class Simulator {
-    constructor(fileName) {
-		// coordinates map x(string form) to y(number) 
+    constructor() {
+		// coordinates map x(string form) to y(string form)
 		this.coordinates = {}
-		this.nextCoordinates = {}
 		this.directions = [['-1', '-1'], ['-1', '0'], ['-1', '1'], ['0', '-1'], ['0', '1'], ['1', '-1'], ['1', '0'], ['1', '1']]
     }
 
@@ -39,10 +38,22 @@ class Simulator {
 		console.log(toPrint)
 	}
 
+    printCoordinatesInLife106Format() {
+        var toPrint = []
+		for(var x of Object.keys(this.coordinates)) {
+			for(var y of this.coordinates[x]) {
+				toPrint.push([x,y])
+			}
+		}
+        var output = '#Life 1.06\n'
+        toPrint.forEach(coordinate => output += `${coordinate[0]} ${coordinate[1]}\n`)
+        console.log(output)
+    }
+
 	simulate() {
 		// keep track of where we've been to prevent duplicates
 		var visited = new Set() 
-
+        var nextCoordinates = {}
 		for(var x of Object.keys(this.coordinates)) {
 			for(var y of this.coordinates[x]) {
 				var visitKey = `${x},${y}`
@@ -51,10 +62,10 @@ class Simulator {
 
 				if (this.cellIsAliveNextGeneration(x, y, true)) {
 					// add to next generation
-					if(this.nextCoordinates[x] == null) {
-						this.nextCoordinates[x] = []
+					if(nextCoordinates[x] == null) {
+						nextCoordinates[x] = []
 					}
-					this.nextCoordinates[x].push(y)
+					nextCoordinates[x].push(y)
 				}
 
 				// Check to see if any of the neighbors need reviving:
@@ -72,30 +83,29 @@ class Simulator {
 
 					if (this.cellIsAliveNextGeneration(newX, newY, false)) {
 						// add to next generation
-						if(this.nextCoordinates[newX] == null) {
-							this.nextCoordinates[newX] = []
+						if(nextCoordinates[newX] == null) {
+							nextCoordinates[newX] = []
 						}
-						this.nextCoordinates[newX].push(newY)
+						nextCoordinates[newX].push(newY)
 					}
 				}
 			}
 		}
-		this.coordinates = this.nextCoordinates
-		this.nextCoordinates = {}
+		this.coordinates = nextCoordinates
 	}
 
 	cellIsAliveNextGeneration(x, y, isAlive) {
 		var numLiveNeighbors = 0 
-        //console.log(`${isAlive ? "ALIVE ": "DEAD "} ${x}, ${y} :`)
+
 		for(var dir of this.directions) {
             var newX = this.add(x, dir[0])
             var newY = this.add(y, dir[1])
-            //console.log(`${newX}, ${newY}`)
+
 			if(this.coordinates[newX] && this.coordinates[newX].includes(newY)) {
 				numLiveNeighbors++
 			}
 		}
-        //console.log(`${isAlive ? "ALIVE ": "DEAD "} ${x}, ${y} has ${numLiveNeighbors} neighbors`)
+
 		if (isAlive) {
 			// 1. Any live cell with fewer than two live neighbours dies, as if by underpopulation.
 			// 2. Any live cell with two or three live neighbours lives on to the next generation.
